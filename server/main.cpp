@@ -1,5 +1,6 @@
 #include <iostream>
 #include <sys/socket.h>
+#include <netinet/in.h>
 
 
 // main
@@ -10,6 +11,16 @@ int main()
     if(server_fd == -1)
     {
         std::cerr << "Socket creation failed!!!" << std::endl;
+    }
+
+    // bind the socket to the port
+    struct sockaddr_in address;
+    address.sin_family = AF_INET;
+    address.sin_addr.s_addr = INADDR_ANY;
+    address.sin_port = htons(8080);
+    if (bind(server_fd, (struct sockaddr*)&address, sizeof(address)) < 0) {
+        std::cerr << "Binding failed." << std::endl;
+        return -1;
     }
 
     // exit
