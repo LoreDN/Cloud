@@ -1,24 +1,40 @@
 #include <iostream>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <unistd.h>
+
+// costants
+#define PORT 8080
+#define STREAM_MAX 1024
 
 
 // main
 int main()
 {
+    // socket declaration
+    int server_fd = -1, client_socket = -1;
+
+    // address declaration
+    struct sockaddr_in listen_addr;
+    struct sockaddr_in client_addr;
+    socklen_t addrlen = sizeof(client_addr);
+
+    // message declaration
+    char buffer[STREAM_MAX] = {0};
+    int message_lenght;
+    
     // create a socket (IPv4 / TCP)
-    int server_fd = socket(AF_INET, SOCK_STREAM, 0);
+    server_fd = socket(AF_INET, SOCK_STREAM, 0);
     if(server_fd == -1)
     {
         std::cerr << "Socket creation failed!!!" << std::endl;
     }
 
     // bind the socket to the port
-    struct sockaddr_in address;
-    address.sin_family = AF_INET;
-    address.sin_addr.s_addr = INADDR_ANY;
-    address.sin_port = htons(8080);
-    if (bind(server_fd, (struct sockaddr*)&address, sizeof(address)) < 0)
+    listen_addr.sin_family = AF_INET;
+    listen_addr.sin_addr.s_addr = INADDR_ANY;
+    listen_addr.sin_port = htons(PORT);
+    if (bind(server_fd, (struct sockaddr*)&listen_addr, sizeof(listen_addr)) < 0)
     {
         std::cerr << "Binding failed!!!" << std::endl;
         return -1;
@@ -33,19 +49,26 @@ int main()
     std::cout << "Server listening on port 8080..." << std::endl;
 
     // accept client connection
-    socklen_t addrlen = sizeof(address);
-    int new_socket = accept(server_fd, (struct sockaddr*)&address, &addrlen);
-    if (new_socket < 0) {
+    client_socket = accept(server_fd, (struct sockaddr*)&client_addr, &addrlen);
+    if (client_socket < 0) {
         std::cerr << "Accept failed." << std::endl;
         return -1;
     }
 
+    // receive and send message
+    message_lenght = recv(client_socket, buffer, sizeof(buffer), 0);
+    if (message_lenght > 0)
+    {
+        std::cout << "Message from client: " << buffer << std::endl;
+        send(client_socket, "Hello from the server!", 22, 0);
+    }
+
+    // close the client socket
+    close(client_socket);
+
+    // close the server
+    close(server_fd);
 
     // exit
     return 0;
 }
-
-
-
-
-
