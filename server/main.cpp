@@ -18,10 +18,19 @@ int main()
     address.sin_family = AF_INET;
     address.sin_addr.s_addr = INADDR_ANY;
     address.sin_port = htons(8080);
-    if (bind(server_fd, (struct sockaddr*)&address, sizeof(address)) < 0) {
-        std::cerr << "Binding failed." << std::endl;
+    if (bind(server_fd, (struct sockaddr*)&address, sizeof(address)) < 0)
+    {
+        std::cerr << "Binding failed!!!" << std::endl;
         return -1;
     }
+
+    // listen for a client connection
+    if (listen(server_fd, 1) < 0)
+    {
+        std::cerr << "Listening failed!!!" << std::endl;
+        return -1;
+    }
+    std::cout << "Server listening on port 8080..." << std::endl;
 
     // exit
     return 0;
