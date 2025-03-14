@@ -44,9 +44,11 @@ void test_socket_creation(int const socket);
 void test_socket_bind(int const bind, int const port);
 void test_socket_listen(int const listen);
 void test_socket_accept(int const socket);
+void test_server_address(int const connection);
+void test_server_connect(int const connection);
 
 
-// Test 1 ----- Test Socket_Error exception in creating
+// Test 1 ----- Test Socket_Error exception in creating a socket
 void test_socket_creation(int const socket)
 {
     // exception handling
@@ -60,7 +62,7 @@ void test_socket_creation(int const socket)
 }
 
 
-// Test 2 ----- Test Socket_Error exception in binding
+// Test 2 ----- Test Socket_Error exception in binding a socket to a port
 void test_socket_bind(int const bind, int const port)
 {
     // exception handling
@@ -74,7 +76,7 @@ void test_socket_bind(int const bind, int const port)
 }
 
 
-// Test 3 ----- Test Socket_Error exception in listening
+// Test 3 ----- Test Socket_Error exception in listening for a client connection
 void test_socket_listen(int const listen)
 {
     // exception handling
@@ -88,13 +90,40 @@ void test_socket_listen(int const listen)
 }
 
 
-// Test 4 ----- Test Socket_Error exception in accepting
+// Test 4 ----- Test Socket_Error exception in accepting a client connection
 void test_socket_accept(int const socket)
 {
     // exception handling
     if(socket < 0)
     {
         throw Socket_Error("The client connection has not been accepted!!!");
+    }
+
+    // exit
+    return;
+}
+
+
+// Test 5 ----- Test Socket_Error exception in finding a server
+void test_server_address(int const connection)
+{
+    // exception handling
+    if(connection < 0)
+    {
+        throw Socket_Error("The Address of the server is not correct!!!");
+    }
+
+    // exit
+    return;
+}
+
+// Test 6 ----- Test Socket_Error exception in connecting to a server
+void test_server_connect(int const connection)
+{
+    // exception handling
+    if(connection < 0)
+    {
+        throw Socket_Error("Connection to the server has failed!!!");
     }
 
     // exit
