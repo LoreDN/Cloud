@@ -1,10 +1,5 @@
-#include <iostream>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <unistd.h>
-
 // lib headers
-#include </home/lorenzo/cloud/lib/exceptions.hpp>
+#include </home/lorenzo/cloud/lib/socket.hpp>
 
 
 // costants
@@ -28,19 +23,7 @@ int main()
     int message_lenght;
     
     // create a socket (IPv4 / TCP)
-    try {
-
-        server_fd = socket(AF_INET, SOCK_STREAM, 0);
-        test_socket_create(server_fd);
-
-    } catch(Socket_Error &error) {
-
-        // error handling
-        error.print();
-
-        // exit
-        exit(-1);
-    }
+    server_fd = socket_create(AF_INET, SOCK_STREAM, 0);
     
     // identify this server
     listen_addr.sin_family = AF_INET;
@@ -48,55 +31,21 @@ int main()
     listen_addr.sin_port = htons(PORT);
 
     // bind the socket to the port
-    try {
-
-        test_socket_bind( bind(server_fd, (struct sockaddr*)&listen_addr, sizeof(listen_addr)) , PORT);
-
-    } catch(Socket_Error &error) {
-
-        // error handling
-        error.print();
-
-        // exit
-        exit(-1);
-    }
+    socket_bind( server_fd, (struct sockaddr*)&listen_addr, sizeof(listen_addr), PORT);
 
     // listen for a client connection
-    try {
-
-        test_socket_listen(listen(server_fd, 1));
-
-    } catch(Socket_Error &error) {
-
-        // error handling
-        error.print();
-
-        // exit
-        exit(-1);
-    }
+    socket_listen(server_fd, 1);
     std::cout << "Server listening on port 8080..." << std::endl;
 
     // accept client connection
-    try {
-
-        client_socket = accept(server_fd, (struct sockaddr*)&client_addr, &addrlen);
-        test_socket_accept(client_socket);
-
-    } catch(Socket_Error &error) {
-
-        // error handling
-        error.print();
-
-        // exit
-        exit(-1);
-    }
+    client_socket = socket_accept(server_fd, (struct sockaddr*)&client_addr, &addrlen);
 
     // receive and send message
     message_lenght = recv(client_socket, buffer, sizeof(buffer), 0);
     if (message_lenght > 0)
     {
         std::cout << "Message from client: " << buffer << std::endl;
-        send(client_socket, "Hello from the server!", 22, 0);
+        send(client_socket, "Hello, from the server!", 22, 0);
     }
 
     // close the client socket
