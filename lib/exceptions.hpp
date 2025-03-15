@@ -40,7 +40,7 @@ class Socket_Error : public Exception {
 
 
 // prototypes
-void test_socket_creation(int const socket);
+void test_socket_create(int const socket);
 void test_socket_bind(int const bind, int const port);
 void test_socket_listen(int const listen);
 void test_socket_accept(int const socket);
@@ -49,10 +49,10 @@ void test_server_connect(int const connection);
 
 
 // Test 1 ----- Test Socket_Error exception in creating a socket
-void test_socket_creation(int const socket)
+void test_socket_create(int const socket)
 {
     // exception handling
-    if(socket == 1)
+    if(socket == -1)
     {
         throw Socket_Error("Socket creation failed!!!");
     }
@@ -108,7 +108,7 @@ void test_socket_accept(int const socket)
 void test_server_address(int const connection)
 {
     // exception handling
-    if(connection < 0)
+    if(connection <= 0)
     {
         throw Socket_Error("The Address of the server is not correct!!!");
     }

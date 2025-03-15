@@ -3,6 +3,10 @@
 #include <netinet/in.h>
 #include <unistd.h>
 
+// lib headers
+#include </home/lorenzo/cloud/lib/exceptions.hpp>
+
+
 // costants
 #define PORT 8080
 #define STREAM_MAX 1024
@@ -24,35 +28,67 @@ int main()
     int message_lenght;
     
     // create a socket (IPv4 / TCP)
-    server_fd = socket(AF_INET, SOCK_STREAM, 0);
-    if(server_fd == -1)
-    {
-        std::cerr << "Socket creation failed!!!" << std::endl;
-    }
+    try {
 
-    // bind the socket to the port
+        server_fd = socket(AF_INET, SOCK_STREAM, 0);
+        test_socket_create(server_fd);
+
+    } catch(Socket_Error &error) {
+
+        // error handling
+        error.print();
+
+        // exit
+        exit(-1);
+    }
+    
+    // identify this server
     listen_addr.sin_family = AF_INET;
     listen_addr.sin_addr.s_addr = INADDR_ANY;
     listen_addr.sin_port = htons(PORT);
-    if (bind(server_fd, (struct sockaddr*)&listen_addr, sizeof(listen_addr)) < 0)
-    {
-        std::cerr << "Binding failed!!!" << std::endl;
-        return -1;
+
+    // bind the socket to the port
+    try {
+
+        test_socket_bind( bind(server_fd, (struct sockaddr*)&listen_addr, sizeof(listen_addr)) , PORT);
+
+    } catch(Socket_Error &error) {
+
+        // error handling
+        error.print();
+
+        // exit
+        exit(-1);
     }
 
     // listen for a client connection
-    if (listen(server_fd, 1) < 0)
-    {
-        std::cerr << "Listening failed!!!" << std::endl;
-        return -1;
+    try {
+
+        test_socket_listen(listen(server_fd, 1));
+
+    } catch(Socket_Error &error) {
+
+        // error handling
+        error.print();
+
+        // exit
+        exit(-1);
     }
     std::cout << "Server listening on port 8080..." << std::endl;
 
     // accept client connection
-    client_socket = accept(server_fd, (struct sockaddr*)&client_addr, &addrlen);
-    if (client_socket < 0) {
-        std::cerr << "Accept failed." << std::endl;
-        return -1;
+    try {
+
+        client_socket = accept(server_fd, (struct sockaddr*)&client_addr, &addrlen);
+        test_socket_accept(client_socket);
+
+    } catch(Socket_Error &error) {
+
+        // error handling
+        error.print();
+
+        // exit
+        exit(-1);
     }
 
     // receive and send message
