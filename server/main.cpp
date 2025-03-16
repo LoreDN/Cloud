@@ -37,22 +37,31 @@ int main()
     socket_listen(server_fd, 1);
     std::cout << "Server listening on port 8080..." << std::endl;
 
-    // accept client connection
-    client_socket = socket_accept(server_fd, (struct sockaddr*)&client_addr, &addrlen);
 
-    // receive and send message
-    message_lenght = recv(client_socket, buffer, sizeof(buffer), 0);
-    if (message_lenght > 0)
-    {
-        std::cout << "Message from client: " << buffer << std::endl;
-        send(client_socket, "Hello, from the server!", 22, 0);
+    // listening loop
+    while(true) {
+
+        // accept client connection
+        client_socket = socket_accept(server_fd, (struct sockaddr*)&client_addr, &addrlen);
+        if(client_socket < 0) {
+            continue;
+        }
+        std::cout << "\nClient connected!\n" << std::endl;
+
+        // receive and send message
+        message_lenght = recv(client_socket, buffer, sizeof(buffer), 0);
+        if (message_lenght > 0) {
+            std::cout << "Message from client: " << buffer << std::endl;
+            send(client_socket, "Hello, from the server!", 22, 0);
+        }
+
+        // close the client socket
+        close(client_socket);
+        std::cout << "\nClient disconnected!\n" << std::endl;
     }
 
-    // close the client socket
-    close(client_socket);
-
     // close the server
-    close(server_fd);
+    close(server_fd);    
 
     // exit
     return 0;
