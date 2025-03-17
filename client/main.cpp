@@ -32,11 +32,14 @@ int main() {
     // connect to the server
     server_connect(client_socket, (struct sockaddr*)&server_addr, sizeof(server_addr));
 
+    // create the message to send
+    std::cout << "Create the message to send:" << std::endl;
+    std::cin.getline(buffer, STREAM_MAX);
+
     // send and receive message
-    send(client_socket, "Hello, Server!", 15, 0);
+    send(client_socket, buffer, sizeof(buffer), 0);
     message_length = read(client_socket, buffer, sizeof(buffer));
-    if (message_length > 0)
-    {     
+    if (message_length > 0) {     
         std::cout << "Message from server: " << buffer << std::endl;
     }
 
