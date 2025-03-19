@@ -1,0 +1,5 @@
+# ignore vscode settings
+.vscode/
+
+# ignore version_realese
+/version_release/

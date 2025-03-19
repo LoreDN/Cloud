@@ -1,10 +1,9 @@
 // lib headers
-#include </home/lorenzo/cloud/lib/socket.hpp>
+#include "lib/socket.hpp"
 
 
 // costants
 #define PORT 8080
-#define SERVER_IP "127.0.0.1"
 #define STREAM_MAX 1024
 
 
@@ -14,6 +13,7 @@ int main() {
     int client_socket = -1;
 
     // address declaration
+    char server_ip[] = "000.000.000.000";
     struct sockaddr_in server_addr;
 
     // message declaration
@@ -26,13 +26,16 @@ int main() {
     // identify the server
     server_addr.sin_family = AF_INET;
     server_addr.sin_port = htons(PORT);
+    std::cout << "\nInsert the Server IPv4 address: ";
+    std::cin >> server_ip;
     
-    server_address(AF_INET, SERVER_IP, &server_addr.sin_addr);
+    server_address(AF_INET, server_ip, &server_addr.sin_addr);
 
     // connect to the server
     server_connect(client_socket, (struct sockaddr*)&server_addr, sizeof(server_addr));
 
     // create the message to send
+    std::cin.ignore();
     std::cout << "Create the message to send:" << std::endl;
     std::cin.getline(buffer, STREAM_MAX);
 
