@@ -1,13 +1,12 @@
 # :cloud: Cloud
 This Project aims to implement a simple application that allows to use your device's storage as a Cloud, without the need for this to be a Server. <br>
-Until now the realeses comprehend only Linux object files.
 <br> <br>
 
 
 # :rocket: Major Releases
 
 ## :envelope: Version 0.1
-This is the first release of the project. <br>
+This is the first pre-release of the project. <br>
 This version aims to check if the Server and the Client are able to connect correctly and exchange simple messages. <br>
 ### Single message Server
 In this simple version:
