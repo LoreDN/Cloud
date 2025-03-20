@@ -7,8 +7,8 @@
 #define STREAM_MAX 1024
 
 
-int main() {
-
+int main()
+{
     // socket declaration
     int client_socket = -1;
 
@@ -19,6 +19,15 @@ int main() {
     // message declaration
     char buffer[STREAM_MAX] = {0};
     int message_length;
+
+
+    // set Windows sockets
+    #ifdef _WIN32
+
+        WSADATA wsa;
+        WSAStartup(MAKEWORD(2,2), &wsa);
+
+    #endif
 
     // create a socket (IPv4 / TCP)
     client_socket = socket_create(AF_INET, SOCK_STREAM, 0);
@@ -41,13 +50,20 @@ int main() {
 
     // send and receive message
     send(client_socket, buffer, sizeof(buffer), 0);
-    message_length = read(client_socket, buffer, sizeof(buffer));
+    message_length = recv(client_socket, buffer, sizeof(buffer), 0);
     if (message_length > 0) {     
         std::cout << "Message from server: " << buffer << std::endl;
     }
 
     // close the socket
-    close(client_socket);
+    closesocket(client_socket);
+
+    // close Windows sockets
+    #ifdef _WIN32
+
+        WSACleanup();
+
+    #endif
 
     // exit
     return 0;

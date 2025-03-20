@@ -28,7 +28,7 @@ void client_message(int const client_socket)
     }
 
     // close the client socket
-    close(client_socket);
+    closesocket(client_socket);
     std::cout << "\nClient disconnected!\n" << std::endl;
 
     // exit thread
@@ -46,6 +46,15 @@ int main()
     struct sockaddr_in listen_addr;
     struct sockaddr_in client_addr;
     socklen_t addrlen = sizeof(client_addr);
+
+
+    // set Windows sockets
+    #ifdef _WIN32
+
+        WSADATA wsa;
+        WSAStartup(MAKEWORD(2,2), &wsa);
+
+    #endif
     
     // create a socket (IPv4 / TCP)
     server_fd = socket_create(AF_INET, SOCK_STREAM, 0);
@@ -77,7 +86,14 @@ int main()
     }
 
     // close the server
-    close(server_fd);    
+    closesocket(server_fd); 
+    
+    // close Windows sockets
+    #ifdef _WIN32
+
+        WSACleanup();
+
+    #endif
 
     // exit
     return 0;
